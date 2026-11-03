@@ -2,60 +2,50 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ahmed Gold Pro</title>
 <style>
-body {
-  margin:0;
-  padding:20px;
-  background:#080d18;
-  color:white;
-  font-family:Arial;
-}
-h1 {
-  color:#e8bd55;
-  text-align:center;
-}
-.card {
-  background:#172235;
-  padding:20px;
-  margin-top:20px;
-  border-radius:15px;
-  text-align:center;
-}
-.price {
-  color:#e8bd55;
-  font-size:28px;
-  font-weight:bold;
-}
-button {
-  background:#e8bd55;
-  padding:13px 25px;
-  border:0;
-  border-radius:10px;
-  font-weight:bold;
-}
+*{box-sizing:border-box}
+body{margin:0;background:#080d18;color:white;font-family:Arial;padding:18px}
+header{text-align:center;padding:20px}
+h1{color:#e8bd55}
+.card{background:#172235;padding:18px;border-radius:15px;margin:15px 0}
+button{background:#e8bd55;color:#111;border:0;padding:13px;border-radius:9px;width:100%;font-weight:bold}
+.value{font-size:25px;color:#e8bd55}
+small{color:#aaa}
 </style>
 </head>
 <body>
-
+<header>
 <h1>AHMED GOLD PRO</h1>
-<p style="text-align:center">منصة تحليل الذهب XAUUSD</p>
+<p>منصة تحليل الذهب XAUUSD</p>
+</header>
 
 <div class="card">
-<h2>لوحة التحكم</h2>
-<div class="price">XAUUSD</div>
-<p>نظام تحليل الذهب</p>
-<p>SMC | Liquidity | Order Blocks</p>
-<button onclick="alert('أهلاً بك في Ahmed Gold Pro')">
-تشغيل النظام
-</button>
+<h3>لوحة التحليل</h3>
+<p>الأصل: GOLD / XAUUSD</p>
+<p>الإطار الزمني: 15 دقيقة</p>
+<p>حالة البيانات: غير متصل</p>
 </div>
 
 <div class="card">
-<h3>حالة النظام</h3>
-<p>الواجهة جاهزة</p>
-<p>الإشارات: غير مفعّلة بعد</p>
+<h3>محرك التحليل</h3>
+<p class="value" id="signal">في انتظار بيانات السوق</p>
+<small>لن نصدر إشارات دون أسعار حقيقية موثوقة.</small>
+</div>
+
+<div class="card">
+<h3>أدوات SMC</h3>
+<p>• سحب السيولة: قيد التجهيز</p>
+<p>• مناطق الطلب والعرض: قيد التجهيز</p>
+<p>• فجوات القيمة العادلة: قيد التجهيز</p>
+<p>• كتل الأوامر: قيد التجهيز</p>
+</div>
+
+<div class="card">
+<h3>إدارة المخاطر</h3>
+<p>لا توجد صفقة نشطة.</p>
+<p>لا تدخل السوق قبل التحقق من التحليل.</p>
 </div>
 
 </body>
