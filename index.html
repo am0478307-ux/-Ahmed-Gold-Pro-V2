@@ -3,111 +3,242 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ahmed Gold Pro V3</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ahmed Gold Pro V4</title>
+<script src="https://unpkg.com/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080d18;color:white;font-family:Arial;padding:14px}
-header{text-align:center;color:#f4c542;font-size:24px;font-weight:bold;padding:18px}
-.card{background:#121d30;border:1px solid #293b55;border-radius:13px;padding:15px;margin:13px 0}
-h3{color:#f4c542}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.price{background:#1b2a40;padding:14px;border-radius:10px;text-align:center}
-.value{color:#36d6a0;font-size:19px;margin-top:8px}
-button{background:#263a55;color:white;padding:10px;border:1px solid #526781;border-radius:8px;margin:4px}
-input{width:100%;padding:12px;background:#1b2a40;color:white;border-radius:8px;margin:10px 0}
-iframe{width:100%;height:380px;border:0;border-radius:10px}
-.result{background:#1b2a40;border-radius:8px;padding:12px;margin:8px 0;line-height:1.7}
-.muted{color:#aebbd0;font-size:13px;line-height:1.8}
+body{margin:0;background:#080d18;color:#fff;font-family:Arial;padding:13px}
+header{text-align:center;padding:18px;color:#f4c542;font-size:25px;font-weight:bold}
+.sub{text-align:center;color:#9ba9bd;font-size:13px;margin-bottom:15px}
+.card{background:#121d30;border:1px solid #293b55;border-radius:13px;padding:14px;margin:12px 0}
+h3{color:#f4c542;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.price,.stat{background:#1b2a40;padding:13px;border-radius:9px;text-align:center}
+.value{color:#35d6a0;font-size:19px;margin-top:8px}
+#chart{height:390px;width:100%}
+.status{color:#b9c6d8;font-size:13px;line-height:1.8}
+.item{background:#1b2a40;padding:11px;border-radius:8px;margin:8px 0;font-size:14px}
+button{background:#263a55;color:white;padding:11px;border:1px solid #526781;border-radius:8px;width:100%;margin-top:9px}
+footer{text-align:center;color:#78869c;font-size:12px;padding:20px}
 </style>
 </head>
 <body>
-<header>AHMED GOLD PRO V3</header>
+
+<header>AHMED GOLD PRO V4</header>
+<div class="sub">Gold Market Analysis • XAUUSD</div>
 
 <div class="card">
 <h3>💰 أسعار الذهب</h3>
 <div class="grid">
-<div class="price">الأونصة بالدولار<div class="value" id="usd">تحميل...</div></div>
-<div class="price">الجرام بالريال<div class="value" id="sar">تحميل...</div></div>
+<div class="price">الأونصة بالدولار<div class="value" id="usd">--</div></div>
+<div class="price">الجرام بالريال<div class="value" id="sar">--</div></div>
 </div>
-<p class="muted" id="status">جارٍ تحميل الأسعار</p>
-</div>
-
-<div class="card">
-<h3>📈 الرسم البياني XAUUSD</h3>
-<iframe src="https://s.tradingview.com/widgetembed/?symbol=OANDA%3AXAUUSD&interval=5&theme=dark&style=1&locale=ar&allow_symbol_change=0"></iframe>
+<p class="status" id="priceStatus">تحميل الأسعار...</p>
 </div>
 
 <div class="card">
-<h3>🧠 محرك SMC</h3>
-<p class="muted">ارفع ملف CSV يحتوي على أعمدة: time, open, high, low, close</p>
-<input type="file" id="csvFile" accept=".csv,text/csv">
-<button onclick="analyze()">تحليل الشموع</button>
-<div id="report" class="muted">في انتظار ملف الشموع.</div>
+<h3>📈 شموع الذهب - 5 دقائق</h3>
+<div id="chart"></div>
+<p class="status" id="dataStatus">جارٍ تحميل بيانات الشموع...</p>
+<button onclick="loadCandles()">تحديث بيانات الشموع</button>
 </div>
 
 <div class="card">
-<h3>📚 أدوات التحليل</h3>
-<div class="result">BOS: كسر هيكل السوق.</div>
-<div class="result">Liquidity Sweep: تجاوز قمة أو قاع سابق ثم الإغلاق داخله.</div>
-<div class="result">FVG: فجوة سعرية بين ثلاث شموع.</div>
-<div class="result">Order Blocks: مناطق مرتبطة بحركة سعرية قوية.</div>
+<h3>🧠 محرك SMC التعليمي</h3>
+<div class="grid">
+<div class="stat">BOS صاعد<div class="value" id="bosUp">0</div></div>
+<div class="stat">BOS هابط<div class="value" id="bosDown">0</div></div>
+<div class="stat">سحب سيولة علوي<div class="value" id="sweepUp">0</div></div>
+<div class="stat">سحب سيولة سفلي<div class="value" id="sweepDown">0</div></div>
+<div class="stat">FVG صاعد<div class="value" id="fvgUp">0</div></div>
+<div class="stat">FVG هابط<div class="value" id="fvgDown">0</div></div>
 </div>
+<div class="item" id="obStatus">Order Blocks: في انتظار البيانات.</div>
+<div class="item" id="lastStatus">آخر نتيجة: لا توجد نتائج بعد.</div>
+<p class="status">العلامات تعليمية وتاريخية، ولا تمثل توصيات شراء أو بيع. قد تختلف الأسعار عن وسيطك.</p>
+</div>
+
+<footer>Ahmed Gold Pro V4 © 2026</footer>
 
 <script>
+let chart=null;
+let candleSeries=null;
+
+function initChart(){
+ const el=document.getElementById('chart');
+ if(!window.LightweightCharts){
+  document.getElementById('dataStatus').textContent='تعذر تحميل مكتبة الرسم.';
+  return;
+ }
+ chart=LightweightCharts.createChart(el,{
+  width:el.clientWidth,
+  height:390,
+  layout:{background:{color:'#121d30'},textColor:'#dce5f2'},
+  grid:{vertLines:{color:'#26364c'},horzLines:{color:'#26364c'}},
+  rightPriceScale:{borderColor:'#40516a'},
+  timeScale:{borderColor:'#40516a',timeVisible:true},
+  crosshair:{mode:0}
+ });
+ candleSeries=chart.addCandlestickSeries({
+  upColor:'#20c997',
+  downColor:'#ef5350',
+  borderUpColor:'#20c997',
+  borderDownColor:'#ef5350',
+  wickUpColor:'#20c997',
+  wickDownColor:'#ef5350'
+ });
+ window.addEventListener('resize',()=>{
+  if(chart) chart.applyOptions({width:el.clientWidth});
+ });
+}
+
+function dateString(d){
+ return d.getFullYear()+'-'+
+ String(d.getMonth()+1).padStart(2,'0')+'-'+
+ String(d.getDate()).padStart(2,'0');
+}
+
+async function loadCandles(){
+ const status=document.getElementById('dataStatus');
+ status.textContent='جارٍ جلب شموع الذهب...';
+ try{
+  const end=new Date();
+  const start=new Date(end.getTime()-7*86400000);
+  const url='https://www.algospecial.com/api/ohlc.php?symbol=XAUUSD&tf=M5&from='+
+   dateString(start)+'&to='+dateString(end)+'&format=json';
+  const response=await fetch(url);
+  if(!response.ok)throw Error('خطأ في مصدر البيانات: '+response.status);
+  const json=await response.json();
+  if(!json.data||!json.data.length)throw Error('لا توجد شموع في الفترة المطلوبة.');
+
+  const bars=json.data.map(x=>{
+   const t=String(x.Timestamp).split(' ');
+   const d=t[0].split('.');
+   const tm=(t[1]||'00:00:00').split(':');
+   const time=Date.UTC(+d[0],+d[1]-1,+d[2],+tm[0],+tm[1],+tm[2])/1000;
+   return {
+    time,
+    open:+x.Open,
+    high:+x.High,
+    low:+x.Low,
+    close:+x.Close
+   };
+  }).filter(x=>Number.isFinite(x.time)&&
+   [x.open,x.high,x.low,x.close].every(Number.isFinite))
+   .sort((a,b)=>a.time-b.time);
+
+  const unique=[...new Map(bars.map(x=>[x.time,x])).values()];
+  if(unique.length<10)throw Error('عدد الشموع غير كافٍ للتحليل.');
+
+  candleSeries.setData(unique);
+  chart.timeScale().fitContent();
+  analyzeSMC(unique);
+  status.textContent='تم تحميل '+unique.length+
+   ' شمعة تاريخية. آخر تحديث للبيانات حسب المصدر: '+json.to;
+ }catch(e){
+  status.textContent='تعذر تحميل الشموع: '+e.message+
+   ' — حاول التحديث لاحقًا.';
+ }
+}
+
+function analyzeSMC(bars){
+ let up=0,down=0,su=0,sd=0,fu=0,fd=0,ob=0;
+ let markers=[];
+ const left=3,right=3;
+ let lastHigh=null,lastLow=null;
+
+ for(let i=left+right;i<bars.length;i++){
+  const p=i-right;
+  let isHigh=true,isLow=true;
+
+  for(let j=p-left;j<=p+right;j++){
+   if(j===p)continue;
+   if(bars[j].high>=bars[p].high)isHigh=false;
+   if(bars[j].low<=bars[p].low)isLow=false;
+  }
+
+  if(isHigh)lastHigh={price:bars[p].high,index:p};
+  if(isLow)lastLow={price:bars[p].low,index:p};
+
+  const c=bars[i],prev=bars[i-1];
+
+  if(lastHigh&&lastHigh.index<i){
+   if(prev.close<=lastHigh.price&&c.close>lastHigh.price){
+    up++;
+    markers.push({time:c.time,position:'belowBar',color:'#22c997',shape:'arrowUp',text:'BOS'});
+    for(let k=i-1;k>=Math.max(0,i-5);k--){
+     if(bars[k].close<bars[k].open){
+      ob++;break;
+     }
+    }
+   }
+   if(c.high>lastHigh.price&&c.close<lastHigh.price){
+    sd++;
+    markers.push({time:c.time,position:'aboveBar',color:'#ffad42',shape:'circle',text:'Sweep'});
+   }
+  }
+
+  if(lastLow&&lastLow.index<i){
+   if(prev.close>=lastLow.price&&c.close<lastLow.price){
+    down++;
+    markers.push({time:c.time,position:'aboveBar',color:'#ef5350',shape:'arrowDown',text:'BOS'});
+    for(let k=i-1;k>=Math.max(0,i-5);k--){
+     if(bars[k].close>bars[k].open){
+      ob++;break;
+     }
+    }
+   }
+   if(c.low<lastLow.price&&c.close>lastLow.price){
+    su++;
+    markers.push({time:c.time,position:'belowBar',color:'#45c5f5',shape:'circle',text:'Sweep'});
+   }
+  }
+
+  if(i>=2){
+   if(c.low>bars[i-2].high){
+    fu++;
+    markers.push({time:c.time,position:'belowBar',color:'#36d6a0',shape:'square',text:'FVG'});
+   }
+   if(c.high<bars[i-2].low){
+    fd++;
+    markers.push({time:c.time,position:'aboveBar',color:'#ff7676',shape:'square',text:'FVG'});
+   }
+  }
+ }
+
+ candleSeries.setMarkers(markers.sort((a,b)=>a.time-b.time));
+ document.getElementById('bosUp').textContent=up;
+ document.getElementById('bosDown').textContent=down;
+ document.getElementById('sweepUp').textContent=sd;
+ document.getElementById('sweepDown').textContent=su;
+ document.getElementById('fvgUp').textContent=fu;
+ document.getElementById('fvgDown').textContent=fd;
+ document.getElementById('obStatus').textContent=
+  'شموع مرشحة لمناطق Order Block: '+ob+
+  ' — عدّ أولي وليس تحديدًا نهائيًا للمناطق.';
+ document.getElementById('lastStatus').textContent=
+  'تم تحليل '+bars.length+' شمعة. العلامات تظهر على الرسم.';
+}
+
 async function updatePrices(){
  try{
- const r=await fetch('https://goldprice.corgano.com/api/v1/latest?currency=SAR');
- if(!r.ok)throw Error();
- const d=await r.json();
- document.getElementById('usd').textContent=
- Number(d.price_usd.per_oz).toFixed(2)+' $';
- document.getElementById('sar').textContent=
- Number(d.currencies.SAR.per_gram).toFixed(2)+' ر.س';
- document.getElementById('status').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar-SA');
+  const r=await fetch('https://goldprice.corgano.com/api/v1/latest?currency=SAR');
+  if(!r.ok)throw Error();
+  const d=await r.json();
+  document.getElementById('usd').textContent=
+   Number(d.price_usd.per_oz).toFixed(2)+' $';
+  document.getElementById('sar').textContent=
+   Number(d.currencies.SAR.per_gram).toFixed(2)+' ر.س';
+  document.getElementById('priceStatus').textContent=
+   'آخر تحديث: '+new Date().toLocaleTimeString('ar-SA');
  }catch(e){
- document.getElementById('status').textContent='تعذر تحديث الأسعار.';
+  document.getElementById('priceStatus').textContent='تعذر تحديث الأسعار.';
  }
 }
-let candles=[];
 
-async function analyze(){
- const file=document.getElementById('csvFile').files[0];
- const report=document.getElementById('report');
- if(!file){report.textContent='اختر ملف CSV أولاً.';return;}
- try{
- const raw=await file.text();
- const lines=raw.trim().split(/\r?\n/);
- const headers=lines[0].toLowerCase().split(',').map(x=>x.trim());
- const idx=['open','high','low','close'].map(x=>headers.indexOf(x));
- if(idx.some(x=>x<0))throw Error('الأعمدة المطلوبة غير موجودة.');
- candles=lines.slice(1).map(line=>{
- const c=line.split(',');
- return {o:+c[idx[0]],h:+c[idx[1]],l:+c[idx[2]],cl:+c[idx[3]]};
- }).filter(c=>[c.o,c.h,c.l,c.cl].every(Number.isFinite));
- if(candles.length<4)throw Error('البيانات قليلة؛ يلزم 4 شموع على الأقل.');
- let bosUp=0,bosDown=0,sweepUp=0,sweepDown=0,fvgUp=0,fvgDown=0;
- for(let i=2;i<candles.length;i++){
- const a=candles[i-2],b=candles[i-1],c=candles[i];
- const prev=candles.slice(Math.max(0,i-10),i);
- const top=Math.max(...prev.map(x=>x.h));
- const bottom=Math.min(...prev.map(x=>x.l));
- if(c.cl>top)bosUp++;
- if(c.cl<bottom)bosDown++;
- if(c.h>top&&c.cl<top)sweepDown++;
- if(c.l<bottom&&c.cl>bottom)sweepUp++;
- if(c.l>a.h)fvgUp++;
- if(c.h<a.l)fvgDown++;
- }
- report.innerHTML=
- 'عدد الشموع: '+candles.length+
- '<div class="result">BOS صاعد: '+bosUp+' | هابط: '+bosDown+'</div>'+
- '<div class="result">سحب سيولة علوي: '+sweepDown+' | سفلي: '+sweepUp+'</div>'+
- '<div class="result">FVG صاعد: '+fvgUp+' | هابط: '+fvgDown+'</div>'+
- '<div class="result">Order Blocks: لم يتم احتسابها في هذا الإصدار.</div>'+
- '<p>النتائج إحصاء أولي للبيانات المستوردة وليست إشارات تداول.</p>';
- }catch(e){report.textContent='خطأ: '+e.message;}
-}
+initChart();
+loadCandles();
 updatePrices();
 setInterval(updatePrices,60000);
 </script>
