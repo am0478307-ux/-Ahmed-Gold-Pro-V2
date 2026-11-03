@@ -3,90 +3,102 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ahmed Gold Pro V2</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080d18;color:white;font-family:Arial;padding:15px}
-h1{text-align:center;color:#e8bd55}
-.card{background:#172235;padding:17px;border-radius:14px;margin:15px 0}
-.price{font-size:25px;color:#e8bd55;font-weight:bold}
-button{background:#e8bd55;border:0;padding:12px;border-radius:8px;font-weight:bold}
-.frames{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
-.frames button{flex:1;min-width:65px}
-.frames button.active{background:#fff}
-.chart{height:480px;width:100%;overflow:hidden;border-radius:10px}
-.chart iframe{width:100%;height:100%;border:0}
-small{color:#aaa}
+body{margin:0;background:#080d18;color:#fff;font-family:Arial,sans-serif;padding:15px}
+header{text-align:center;color:#f5c542;font-size:25px;font-weight:bold;margin:15px}
+.sub{text-align:center;color:#9ba9bd;margin-bottom:20px}
+.card{background:#121c2d;border:1px solid #283850;border-radius:13px;padding:16px;margin-bottom:14px}
+h3{color:#f5c542;margin-top:0}
+.prices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.price{background:#1b2940;border-radius:10px;padding:14px;text-align:center}
+.value{font-size:20px;color:#35d49a;font-weight:bold;margin-top:8px}
+button{background:#253852;color:white;border:1px solid #526781;border-radius:8px;padding:10px;margin:4px;cursor:pointer}
+button.active{background:#d6a92e;color:#111}
+iframe{width:100%;height:390px;border:0;border-radius:10px}
+.info{color:#aebbd0;font-size:13px;line-height:1.8}
+.result{padding:10px;background:#1b2940;border-radius:8px;margin:8px 0}
+footer{text-align:center;color:#7e8ba1;font-size:12px;padding:15px}
 </style>
 </head>
 <body>
 
-<h1>AHMED GOLD PRO</h1>
-<p style="text-align:center">منصة متابعة الذهب XAUUSD</p>
+<header>AHMED GOLD PRO V2</header>
+<div class="sub">منصة متابعة وتحليل الذهب التعليمية</div>
 
 <div class="card">
-<h3>سعر الذهب بالدولار للأونصة</h3>
-<div class="price" id="usd">جاري التحميل...</div>
+<h3>أسعار الذهب</h3>
+<div class="prices">
+<div class="price">
+سعر الأونصة بالدولار
+<div class="value" id="usd">جاري التحميل...</div>
+</div>
+<div class="price">
+سعر الجرام بالريال
+<div class="value" id="sar">جاري التحميل...</div>
+</div>
+</div>
+<div class="info" id="status">جارٍ جلب بيانات الأسعار...</div>
 </div>
 
 <div class="card">
-<h3>سعر الذهب بالريال للجرام</h3>
-<div class="price" id="sar">جاري التحميل...</div>
+<h3>الرسم البياني XAUUSD</h3>
+<div>
+<button onclick="changeFrame('5',this)" class="active">5 دقائق</button>
+<button onclick="changeFrame('15',this)">15 دقيقة</button>
+<button onclick="changeFrame('60',this)">ساعة</button>
+<button onclick="changeFrame('240',this)">4 ساعات</button>
 </div>
-
-<div class="card">
-<h3>الرسم البياني للذهب</h3>
-<div class="frames">
-<button onclick="changeFrame('5')">5 دقائق</button>
-<button class="active" onclick="changeFrame('15')">15 دقيقة</button>
-<button onclick="changeFrame('60')">ساعة</button>
-<button onclick="changeFrame('240')">4 ساعات</button>
-</div>
-<div class="chart">
-<iframe id="goldChart"
-src="https://s.tradingview.com/widgetembed/?symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=%23080d18&theme=dark&style=1&locale=ar"
-allowfullscreen>
+<iframe id="chart"
+src="https://s.tradingview.com/widgetembed/?symbol=OANDA%3AXAUUSD&interval=5&theme=dark&style=1&locale=ar&hide_top_toolbar=0&allow_symbol_change=0">
 </iframe>
-</div>
-<small>الرسم من TradingView، والسعر قد يختلف عن Exness.</small>
+<div class="info">قد تختلف أسعار الرسم عن أسعار وسيطك.</div>
 </div>
 
 <div class="card">
-<h3>حالة النظام</h3>
-<p id="status">جاري الاتصال...</p>
-<button onclick="loadGold()">تحديث الأسعار</button>
+<h3>محرك SMC التعليمي</h3>
+<div class="result">💧 سحب السيولة: يحتاج بيانات الشموع لاكتشافه.</div>
+<div class="result">📊 هيكل السوق BOS: يحتاج بيانات الشموع.</div>
+<div class="result">🟨 فجوات FVG: تحتاج بيانات الشموع.</div>
+<div class="result">🟦 مناطق Order Blocks: تحتاج بيانات الشموع.</div>
+<p class="info">
+هذه الأدوات لم تُفعّل بعد؛ الرسم المضمّن لا يسمح للموقع بقراءة بيانات شموعه مباشرة.
+لن نعرض إشارات وهمية أو نتائج غير محسوبة.
+</p>
 </div>
+
+<footer>Ahmed Gold Pro V2 © 2026</footer>
 
 <script>
-function changeFrame(frame){
-document.querySelectorAll('.frames button').forEach(b=>{
-b.classList.remove('active');
-});
-event.target.classList.add('active');
-document.getElementById('goldChart').src=
-'https://s.tradingview.com/widgetembed/?symbol=OANDA%3AXAUUSD&interval='+
-frame+'&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=%23080d18&theme=dark&style=1&locale=ar';
+async function loadPrices(){
+ const status=document.getElementById('status');
+ try{
+  const response=await fetch('https://goldprice.corgano.com/api/v1/latest?currency=SAR');
+  if(!response.ok) throw new Error('تعذر جلب البيانات');
+  const data=await response.json();
+  const usd=data.price_usd?.per_oz;
+  const sar=data.currencies?.SAR?.per_gram;
+  if(!usd || !sar) throw new Error('بيانات الأسعار غير مكتملة');
+  document.getElementById('usd').textContent=
+   Number(usd).toLocaleString('en-US',{maximumFractionDigits:2})+' $';
+  document.getElementById('sar').textContent=
+   Number(sar).toLocaleString('en-US',{maximumFractionDigits:2})+' ر.س';
+  status.textContent='تم تحديث الأسعار: '+new Date().toLocaleTimeString('ar-SA');
+ }catch(error){
+  status.textContent='تعذر تحديث الأسعار. حاول لاحقاً.';
+ }
 }
-
-async function loadGold(){
-try{
-let r=await fetch('https://goldprice.corgano.com/api/v1/latest?currency=SAR');
-if(!r.ok) throw Error();
-let j=await r.json();
-let d=j.data;
-document.getElementById('usd').textContent=
-Number(d.price_usd.per_oz).toFixed(2)+' USD';
-document.getElementById('sar').textContent=
-Number(d.currencies.SAR.per_gram).toFixed(2)+' SAR';
-document.getElementById('status').textContent='متصل بنجاح';
-}catch(e){
-document.getElementById('status').textContent='تعذر تحديث الأسعار';
+function changeFrame(frame,button){
+ document.getElementById('chart').src=
+ 'https://s.tradingview.com/widgetembed/?symbol=OANDA%3AXAUUSD&interval='+
+ frame+'&theme=dark&style=1&locale=ar&hide_top_toolbar=0&allow_symbol_change=0';
+ document.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+ button.classList.add('active');
 }
-}
-loadGold();
-setInterval(loadGold,60000);
+loadPrices();
+setInterval(loadPrices,60000);
 </script>
-
 </body>
 </html>
